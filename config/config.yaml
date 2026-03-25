@@ -1,0 +1,6 @@
+base_url: "https://dummyjson.com"
+
+login:
+  url: "/auth/login"
+  username: "emilys"
+  password: "emilyspass"

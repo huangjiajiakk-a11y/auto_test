@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__get_swagger__fetch_swagger_schema"
+    ]
+  }
+}

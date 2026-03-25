@@ -1,0 +1,25 @@
+- case_name: "登录成功"
+  method: "post"
+  path: "/auth/login"
+  json:
+    username: "emilys"
+    password: "emilyspass"
+    expiresInMins: 30
+  need_token: false
+  expected_code: 200
+  expected_fields:
+    - "id"
+    - "username"
+    - "accessToken"
+    - "refreshToken"
+
+- case_name: "获取当前用户信息"
+  method: "get"
+  path: "/auth/me"
+  need_token: true
+  expected_code: 200
+  expected_fields:
+    - "id"
+    - "username"
+    - "email"
+    - "firstName"
