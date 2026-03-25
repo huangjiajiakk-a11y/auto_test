@@ -1,0 +1,44 @@
+name: Interface Tests on Push
+
+on:
+  push:
+    branches:
+      - main
+      # - dev
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install mcp requests
+
+      - name: Run interface tests
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          pytest tests/ --junitxml=test-results.xml --html=report.html
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            test-results.xml
+            report.html
