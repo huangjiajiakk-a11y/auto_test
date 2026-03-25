@@ -33,7 +33,7 @@ jobs:
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
           API_KEY: ${{ secrets.API_KEY }}
         run: |
-          pytest tests/ --junitxml=test-results.xml --html=report.html
+          pytest testcases/ --junitxml=test-results.xml --html=report.html
 
       - name: Upload test results
         if: always()
