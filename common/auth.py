@@ -16,11 +16,11 @@ def login_and_get_token() -> str:
     cfg = get_config()
     url = cfg["base_url"] + cfg["login"]["url"]
     payload = {
-        "username": cfg["login"]["username"],
+        "phone": cfg["login"]["phone"],
         "password": cfg["login"]["password"],
     }
     resp = requests.post(url, json=payload, timeout=10)
     resp.raise_for_status()
     data = resp.json()
-    _token_cache = data.get("accessToken", "")
+    _token_cache = data.get("data", {}).get("accessToken", "")
     return _token_cache

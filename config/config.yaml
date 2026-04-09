@@ -1,6 +1,13 @@
-base_url: "https://dummyjson.com"
+base_url: "http://localhost:8080"
+
+mysql:
+  host: "localhost"
+  port: 3306
+  user: "root1"
+  password: "QAZwsx123."
+  database: "l_table"
 
 login:
-  url: "/auth/login"
-  username: "emilys"
-  password: "emilyspass"
+  url: "/api/login"
+  phone: "15377095676"
+  password: "hjj123456."
