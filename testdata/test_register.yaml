@@ -1,0 +1,84 @@
+# 注册接口测试数据
+- case_name: "手机号已注册"
+  method: "post"
+  path: "/api/register"
+  json:
+    phone: "15377095676"
+    password: "test123456"
+  need_token: false
+  expected_code: 400
+  expected_fields:
+    - "code"
+    - "message"
+
+- case_name: "手机号格式错误-位数不足"
+  method: "post"
+  path: "/api/register"
+  json:
+    phone: "1234567"
+    password: "test123456"
+  need_token: false
+  expected_code: 400
+  expected_fields:
+    - "code"
+    - "message"
+
+- case_name: "手机号格式错误-非1开头"
+  method: "post"
+  path: "/api/register"
+  json:
+    phone: "05377095676"
+    password: "test123456"
+  need_token: false
+  expected_code: 400
+  expected_fields:
+    - "code"
+    - "message"
+
+- case_name: "密码过短-少于6位"
+  method: "post"
+  path: "/api/register"
+  json:
+    phone: "13900001111"
+    password: "12345"
+  need_token: false
+  expected_code: 400
+  expected_fields:
+    - "code"
+    - "message"
+
+- case_name: "密码过长-超过20位"
+  method: "post"
+  path: "/api/register"
+  json:
+    phone: "13900001111"
+    password: "123456789012345678901"
+  need_token: false
+  expected_code: 400
+  expected_fields:
+    - "code"
+    - "message"
+
+- case_name: "手机号为空"
+  method: "post"
+  path: "/api/register"
+  json:
+    phone: ""
+    password: "test123456"
+  need_token: false
+  expected_code: 400
+  expected_fields:
+    - "code"
+    - "message"
+
+- case_name: "密码为空"
+  method: "post"
+  path: "/api/register"
+  json:
+    phone: "13900001111"
+    password: ""
+  need_token: false
+  expected_code: 400
+  expected_fields:
+    - "code"
+    - "message"
