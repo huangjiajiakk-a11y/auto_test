@@ -1,7 +1,7 @@
 base_url: "http://localhost:8080"
 
 mysql:
-  host: "localhost"
+  host: "47.110.90.47"
   port: 3306
   user: "root1"
   password: "QAZwsx123."

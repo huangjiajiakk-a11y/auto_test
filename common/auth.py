@@ -22,5 +22,5 @@ def login_and_get_token() -> str:
     resp = requests.post(url, json=payload, timeout=10)
     resp.raise_for_status()
     data = resp.json()
-    _token_cache = data.get("data", {}).get("accessToken", "")
+    _token_cache = data.get("data", {}).get("token", "")
     return _token_cache

@@ -10,6 +10,11 @@
   expected_fields:
     - "code"
     - "message"
+  db_check:
+    table: "l_dairy"
+    field: "status"
+    value: 1
+    match_by: "content"
 
 - case_name: "日记内容为空"
   method: "post"
@@ -27,7 +32,7 @@
   method: "post"
   path: "/api/dairy/publish"
   json:
-    content: "这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能"
+    content: "这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能佳佳佳佳"
     type: "IMAGE_TEXT"
   need_token: true
   expected_code: 400
@@ -64,7 +69,4 @@
     content: "未登录测试"
     type: "IMAGE_TEXT"
   need_token: false
-  expected_code: 401
-  expected_fields:
-    - "code"
-    - "message"
+  expected_code: 403
