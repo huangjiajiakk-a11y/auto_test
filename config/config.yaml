@@ -1,4 +1,4 @@
-base_url: "http://localhost:8080"
+base_url: "http://47.110.90.47:8081"
 
 mysql:
   host: "47.110.90.47"
