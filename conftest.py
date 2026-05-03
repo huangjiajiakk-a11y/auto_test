@@ -1,8 +1,11 @@
 import json
+import types
 import pytest
 from pytest_metadata.plugin import metadata_key
 from common.auth import login_and_get_token
 from common.http_client import HttpClient
+from common.yaml_util import load_yaml
+from common.base_test import BaseTestCase
 
 
 @pytest.fixture(scope="session")
@@ -45,7 +48,8 @@ def pytest_runtest_makereport(item, call):
                 f"<b>{info['method']}</b> {info['url']}",
             ]
             if info.get("request_params"):
-                req_parts.append(f"Params: <pre>{json.dumps(info['request_params'], ensure_ascii=False, indent=2)}</pre>")
+                req_parts.append(
+                    f"Params: <pre>{json.dumps(info['request_params'], ensure_ascii=False, indent=2)}</pre>")
             if info.get("request_body"):
                 req_parts.append(f"Body: <pre>{json.dumps(info['request_body'], ensure_ascii=False, indent=2)}</pre>")
 
@@ -64,3 +68,51 @@ def pytest_runtest_makereport(item, call):
         else:
             report.request_info = ""
             report.response_info = ""
+
+
+# ── YAML 自动发现 ──────────────────────────────────────────────
+
+def pytest_collect_file(parent, file_path):
+    """1、优先扫描pytest.ini文件中的testpaths
+    2、收集 testdata/ 下的 test_*.yaml 文件
+    3、每读到一个文件，自动调用pytest_collect_fire函数"""
+    if file_path.suffix in (".yaml", ".yml") and file_path.name.startswith("test_"):
+        return YamlModule.from_parent(parent, path=file_path) # parent为当前文件的父节点，file_path则为扫描到的yaml文件
+
+
+
+class YamlModule(pytest.Module):
+    """将一个 YAML 测试数据文件转换为 pytest 可收集的模块"""
+
+    def _getobj(self):
+        """合成一个包含参数化测试类的模块对象"""
+        test_data = load_yaml(self.path.name)
+
+        # 动态创建测试类
+        class AutoTest(BaseTestCase):
+            pass
+
+        # 参数化装饰
+        def test_api(self, client, case):
+            self.run_case(client, case)
+
+        test_api = pytest.mark.parametrize(
+            "case",
+            test_data,
+            ids=[item["case_name"] for item in test_data],
+        )(test_api)
+
+        AutoTest.test_api = test_api
+
+        # 用 YAML 文件名（去掉 .yaml）作为类名
+        class_name = self.path.stem.replace("test_", "Test_").title().replace("_", "")
+        AutoTest.__name__ = class_name
+        AutoTest.__qualname__ = class_name
+
+        # 合成模块
+        mod = types.ModuleType(self.path.stem)
+        mod.__file__ = str(self.path)
+        mod.__loader__ = None
+        mod.__test__ = True
+        setattr(mod, class_name, AutoTest)
+        return mod

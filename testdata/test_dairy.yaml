@@ -1,72 +1,90 @@
 # 发布日记接口测试数据
 - case_name: "发布日记成功"
-  method: "post"
-  path: "/api/dairy/publish"
-  json:
-    content: "今天天气真好，适合出去走走"
-    type: "IMAGE_TEXT"
-  need_token: true
-  expected_code: 200
-  expected_fields:
-    - "code"
-    - "message"
-  db_check:
-    table: "l_dairy"
-    field: "status"
-    value: 1
-    match_by: "content"
+  steps:
+    - name: "发布日记成功"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        content: "今天天气真好，适合出去走走"
+        type: "IMAGE_TEXT"
+      need_token: true
+      expected_code: 200
+      expected_json:
+        code: 200
+        message: "success"
+        data:
+          diaryNum: "$.data.diaryNum"
+      db_check:
+        table: "l_dairy"
+        match_by: "content"
+        match_value_from: "$.json.content"
+        checks:
+          - field: "status"
+            value: 1
+          - field: "content"
+            value: "$.json.content"
 
 - case_name: "日记内容为空"
-  method: "post"
-  path: "/api/dairy/publish"
-  json:
-    content: ""
-    type: "IMAGE_TEXT"
-  need_token: true
-  expected_code: 400
-  expected_fields:
-    - "code"
-    - "message"
+  steps:
+    - name: "日记内容为空"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        content: ""
+        type: "IMAGE_TEXT"
+      need_token: true
+      expected_code: 400
+      expected_fields:
+        - "code"
+        - "message"
 
 - case_name: "日记内容超过150字"
-  method: "post"
-  path: "/api/dairy/publish"
-  json:
-    content: "这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能佳佳佳佳"
-    type: "IMAGE_TEXT"
-  need_token: true
-  expected_code: 400
-  expected_fields:
-    - "code"
-    - "message"
+  steps:
+    - name: "日记内容超过150字"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        content: "这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能这是一段超长的日记内容用于测试字数限制功能佳佳佳佳"
+        type: "IMAGE_TEXT"
+      need_token: true
+      expected_code: 400
+      expected_fields:
+        - "code"
+        - "message"
 
 - case_name: "缺少type字段"
-  method: "post"
-  path: "/api/dairy/publish"
-  json:
-    content: "测试日记"
-  need_token: true
-  expected_code: 400
-  expected_fields:
-    - "code"
-    - "message"
+  steps:
+    - name: "缺少type字段"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        content: "测试日记"
+      need_token: true
+      expected_code: 400
+      expected_fields:
+        - "code"
+        - "message"
 
 - case_name: "缺少content字段"
-  method: "post"
-  path: "/api/dairy/publish"
-  json:
-    type: "IMAGE_TEXT"
-  need_token: true
-  expected_code: 400
-  expected_fields:
-    - "code"
-    - "message"
+  steps:
+    - name: "缺少content字段"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        type: "IMAGE_TEXT"
+      need_token: true
+      expected_code: 400
+      expected_fields:
+        - "code"
+        - "message"
 
 - case_name: "未登录发布日记"
-  method: "post"
-  path: "/api/dairy/publish"
-  json:
-    content: "未登录测试"
-    type: "IMAGE_TEXT"
-  need_token: false
-  expected_code: 403
+  steps:
+    - name: "未登录发布日记"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        content: "未登录测试"
+        type: "IMAGE_TEXT"
+      need_token: false
+      expected_code: 403

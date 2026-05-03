@@ -1,25 +1,60 @@
 # 删除日记接口测试数据
+- case_name: "删除日记成功"
+  steps:
+    - name: "发布日记"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        content: "这是一条待删除的测试日记"
+        type: "IMAGE_TEXT"
+      expected_code: 200
+      extract:
+        diaryNum: "$.data.diaryNum"
+    - name: "删除日记"
+      method: "post"
+      path: "/api/dairy/delete"
+      params:
+        diaryNum: "$.extracted.diaryNum"
+      need_token: true
+      expected_code: 200
+      expected_json:
+        code: 200
+        message: "success"
+      db_check:
+        table: "l_dairy"
+        match_by: "diary_num"
+        match_value_from: "$.extracted.diaryNum"
+        checks:
+          - field: "status"
+            value: 0
+
 - case_name: "删除不存在的日记"
-  method: "post"
-  path: "/api/dairy/delete"
-  params:
-    diaryNum: 999999999
-  need_token: true
-  expected_code: 400
-  expected_fields:
-    - "code"
-    - "message"
+  steps:
+    - name: "删除不存在的日记"
+      method: "post"
+      path: "/api/dairy/delete"
+      params:
+        diaryNum: 999999999
+      need_token: true
+      expected_code: 400
+      expected_fields:
+        - "code"
+        - "message"
 
 - case_name: "缺少diaryNum参数"
-  method: "post"
-  path: "/api/dairy/delete"
-  need_token: true
-  expected_code: 403
+  steps:
+    - name: "缺少diaryNum参数"
+      method: "post"
+      path: "/api/dairy/delete"
+      need_token: true
+      expected_code: 403
 
 - case_name: "未登录删除日记"
-  method: "post"
-  path: "/api/dairy/delete"
-  params:
-    diaryNum: 1
-  need_token: false
-  expected_code: 403
+  steps:
+    - name: "未登录删除日记"
+      method: "post"
+      path: "/api/dairy/delete"
+      params:
+        diaryNum: 1
+      need_token: false
+      expected_code: 403
