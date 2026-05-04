@@ -1,0 +1,95 @@
+# 查询日记接口测试数据
+# 接口信息：GET /api/dairy/query?diaryNum={diaryNum}
+# 需要JWT token认证
+# 返回体：{ code, message, data: { id, content, status, type, phone, diaryNum, createTime } }
+
+- case_name: "查询日记成功"
+  steps:
+    - name: "发布日记"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        content: "这是一条用于查询测试的日记"
+        type: "IMAGE_TEXT"
+      need_token: true
+      expected_code: 200
+      extract:
+        diaryNum: "$.data.diaryNum"
+    - name: "查询日记"
+      method: "get"
+      path: "/api/dairy/query"
+      params:
+        diaryNum: "$.extracted.diaryNum"
+      need_token: true
+      expected_code: 200
+      expected_json:
+        code: 200
+        message: "success"
+        data:
+          content: "这是一条用于查询测试的日记"
+          status: 1
+          diaryNum: "$.data.diaryNum"
+          type: 1
+  cleanup:
+    sql: "DELETE FROM l_dairy WHERE diary_num = %s"
+    args:
+      - "$.extracted.diaryNum"
+
+- case_name: "查询不存在的日记"
+  steps:
+    - name: "查询不存在的日记"
+      method: "get"
+      path: "/api/dairy/query"
+      params:
+        diaryNum: 999999999
+      need_token: true
+      expected_code: 400
+
+- case_name: "查询已删除的日记"
+  steps:
+    - name: "发布日记"
+      method: "post"
+      path: "/api/dairy/publish"
+      json:
+        content: "这是一条待删除后查询的日记"
+        type: "IMAGE_TEXT"
+      need_token: true
+      expected_code: 200
+      extract:
+        diaryNum: "$.data.diaryNum"
+    - name: "删除日记"
+      method: "post"
+      path: "/api/dairy/delete"
+      params:
+        diaryNum: "$.extracted.diaryNum"
+      need_token: true
+      expected_code: 200
+    - name: "查询已删除的日记"
+      method: "get"
+      path: "/api/dairy/query"
+      params:
+        diaryNum: "$.extracted.diaryNum"
+      need_token: true
+      expected_code: 400
+  cleanup:
+    sql: "DELETE FROM l_dairy WHERE diary_num = %s"
+    args:
+      - "$.extracted.diaryNum"
+
+- case_name: "缺少diaryNum参数"
+  steps:
+    - name: "缺少diaryNum参数"
+      method: "get"
+      path: "/api/dairy/query"
+      need_token: true
+      expected_code: 403
+
+- case_name: "未登录查询日记"
+  steps:
+    - name: "未登录查询日记"
+      method: "get"
+      path: "/api/dairy/query"
+      params:
+        diaryNum: 1
+      need_token: false
+      expected_code: 403
