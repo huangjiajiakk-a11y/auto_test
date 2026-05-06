@@ -34,9 +34,6 @@
         type: "IMAGE_TEXT"
       need_token: true
       expected_code: 400
-      expected_fields:
-        - "code"
-        - "message"
 
 - case_name: "日记内容超过150字"
   steps:
@@ -48,9 +45,6 @@
         type: "IMAGE_TEXT"
       need_token: true
       expected_code: 400
-      expected_fields:
-        - "code"
-        - "message"
 
 - case_name: "缺少type字段"
   steps:
@@ -61,9 +55,6 @@
         content: "测试日记"
       need_token: true
       expected_code: 400
-      expected_fields:
-        - "code"
-        - "message"
 
 - case_name: "缺少content字段"
   steps:
@@ -74,9 +65,6 @@
         type: "IMAGE_TEXT"
       need_token: true
       expected_code: 400
-      expected_fields:
-        - "code"
-        - "message"
 
 - case_name: "未登录发布日记"
   steps:

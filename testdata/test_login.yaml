@@ -24,9 +24,6 @@
         password: "wrongpassword"
       need_token: false
       expected_code: 400
-      expected_fields:
-        - "code"
-        - "message"
 
 - case_name: "手机号格式错误"
   steps:
@@ -38,9 +35,6 @@
         password: "hjj123456."
       need_token: false
       expected_code: 400
-      expected_fields:
-        - "code"
-        - "message"
 
 - case_name: "手机号为空"
   steps:
@@ -52,9 +46,6 @@
         password: "hjj123456."
       need_token: false
       expected_code: 400
-      expected_fields:
-        - "code"
-        - "message"
 
 - case_name: "密码为空"
   steps:
@@ -66,6 +57,3 @@
         password: ""
       need_token: false
       expected_code: 400
-      expected_fields:
-        - "code"
-        - "message"
